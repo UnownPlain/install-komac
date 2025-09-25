@@ -1,0 +1,25 @@
+name: Install komac
+description: Install the komac CLI (latest, specific version, or nightly) on Windows, Linux, or macOS.
+author: UnownPlain
+
+inputs:
+  version:
+    description: Specific komac version 2.3.0+ (e.g. 2.13.0 or nightly).
+    required: false
+  github_token:
+    description: GitHub token for API rate limit (defaults to GITHUB_TOKEN).
+    required: false
+
+runs:
+  using: composite
+  steps:
+    - name: Install komac
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+        GH_TOKEN: ${{ inputs.github_token || github.token }}
+      run: bash "${GITHUB_ACTION_PATH}/install_komac.sh"
+
+branding:
+  icon: download
+  color: blue
