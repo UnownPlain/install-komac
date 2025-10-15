@@ -22,29 +22,32 @@ ARM64) arch_norm="aarch64" ;;
 	;;
 esac
 
-log "Downloading asset from release"
-
-download_args=(-R "russellbanks/Komac" -p "komac-[0-9n]*-$arch_norm-$target")
+repo="russellbanks/Komac"
 
 if [[ "$RUNNER_OS" == "Windows" ]]; then
 	install_dir="$HOME/.local/bin"
 	mkdir -p "$install_dir"
-	download_args+=(-O "$install_dir/komac.exe")
+	output_file="$install_dir/komac.exe"
 else
 	install_dir="/usr/local/bin"
 	cd $(mktemp -d)
-	download_args+=(-O "komac.tar.gz")
+	output_file="komac.tar.gz"
 fi
 
 if [[ -n "${VERSION:-}" ]]; then
 	if [[ "$VERSION" == nightly ]]; then
-		gh release download "$VERSION" "${download_args[@]}"
+		version="nightly"
 	else
-		gh release download "v${VERSION#v}" "${download_args[@]}"
+		version="v${VERSION#v}"
 	fi
 else
-	gh release download "${download_args[@]}"
+	version=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/$repo/releases/latest" | jq -r '.tag_name')
 fi
+
+asset_url="https://github.com/$repo/releases/download/$version/komac-${version#v}-$arch_norm-$target"
+
+log "Downloading from: $asset_url"
+curl -fsSL -o "$output_file" "$asset_url"
 
 if [[ "$RUNNER_OS" == "Windows" ]]; then
 	echo $(cygpath -aw "$install_dir") >>"$GITHUB_PATH"
