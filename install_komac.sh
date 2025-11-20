@@ -22,7 +22,7 @@ ARM64) arch_norm="aarch64" ;;
 	;;
 esac
 
-repo="russellbanks/Komac"
+repo="${REPO:-russellbanks/Komac}"
 
 if [[ "$RUNNER_OS" == "Windows" ]]; then
 	install_dir="$HOME/.local/bin"
