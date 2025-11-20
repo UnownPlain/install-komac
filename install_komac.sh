@@ -41,13 +41,13 @@ if [[ -n "${VERSION:-}" ]]; then
 		version="v${VERSION#v}"
 	fi
 else
-	version=$(curl -fsSL -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/$repo/releases/latest" | jq -r '.tag_name')
+	version=$(curl -fsSL --retry 3 --max-time 10 -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/$repo/releases/latest" | jq -r '.tag_name')
 fi
 
 asset_url="https://github.com/$repo/releases/download/$version/komac-${version#v}-$arch_norm-$target"
 
 log "Downloading from: $asset_url"
-curl -fsSL -o "$output_file" "$asset_url"
+curl -fsSL --retry 5 --max-time 10 -o "$output_file" "$asset_url"
 
 if [[ "$RUNNER_OS" == "Windows" ]]; then
 	echo $(cygpath -aw "$install_dir") >>"$GITHUB_PATH"
