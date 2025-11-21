@@ -32,6 +32,7 @@ Cross-platform action to install [komac](https://github.com/russellbanks/Komac).
 - `windows-11-arm`
 - `ubuntu-24.04`
 - `ubuntu-24.04-arm`
+- `ubuntu-slim`
 - `macos-26`
 - `macos-15-intel`
 
