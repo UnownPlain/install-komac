@@ -4,6 +4,8 @@ on:
   push:
   pull_request:
 
+permissions: {}
+
 jobs:
   matrix-test:
     strategy:
@@ -22,7 +24,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        with:
+          persist-credentials: false
       - name: Run install-komac Action
         uses: ./
       - name: Verify komac Availability
