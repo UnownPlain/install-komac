@@ -2,12 +2,21 @@ name: Test Action
 
 on:
   push:
+    branches:
+      - main
   pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions: {}
 
 jobs:
   matrix-test:
+    name: Test
+    timeout-minutes: 5
     strategy:
       fail-fast: false
       matrix:
@@ -22,10 +31,19 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
         with:
           persist-credentials: false
+
       - name: Run Action
         uses: ./
+
       - name: Verify komac Availability
         run: komac --version
+
+  test-success:
+    runs-on: ubuntu-slim
+    needs: matrix-test
+    steps:
+      - name: Check
+        run: echo 'All tests succeeded!'
