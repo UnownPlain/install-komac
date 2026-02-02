@@ -1,11 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-log() { echo "[install-komac] $*"; }
+log() {
+	echo "[install-komac] $*"
+}
+
+repo="${REPO:-russellbanks/Komac}"
+compression="${COMPRESSION:-gz}"
+linux_libc="${LINUX_LIBC:-gnu}"
 
 case "$RUNNER_OS" in
-Linux) target="unknown-linux-gnu.tar.gz" ;;
-macOS) target="apple-darwin.tar.gz" ;;
+Linux) target="unknown-linux-$linux_libc.tar.$compression" ;;
+macOS) target="apple-darwin.tar.$compression" ;;
 Windows) target="pc-windows-msvc.exe" ;;
 *)
 	log "Unsupported RUNNER_OS: $RUNNER_OS"
@@ -22,38 +28,35 @@ ARM64) arch_norm="aarch64" ;;
 	;;
 esac
 
-repo="${REPO:-russellbanks/Komac}"
-
 if [[ "$RUNNER_OS" == "Windows" ]]; then
 	install_dir="$HOME/.local/bin"
 	mkdir -p "$install_dir"
 	output_file="$install_dir/komac.exe"
 else
 	install_dir="/usr/local/bin"
-	cd $(mktemp -d)
-	output_file="komac.tar.gz"
+	cd "$(mktemp -d)"
+	output_file="komac.tar.$compression"
 fi
 
 if [[ -n "${VERSION:-}" ]]; then
-	if [[ "$VERSION" == nightly ]]; then
-		version="nightly"
-	else
-		version="v${VERSION#v}"
-	fi
+	version="${VERSION#v}"
+	[[ "$version" != "nightly" ]] && version="v$version"
 else
-	version=$(curl -fsSL --retry 3 --max-time 10 -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/repos/$repo/releases/latest" | jq -r '.tag_name')
+	version=$(curl -fsSL --retry 3 --max-time 10 \
+		-H "Authorization: Bearer $GH_TOKEN" \
+		"https://api.github.com/repos/$repo/releases/latest" |
+		jq -r '.tag_name')
 fi
 
 asset_url="https://github.com/$repo/releases/download/$version/komac-${version#v}-$arch_norm-$target"
-
 log "Downloading from: $asset_url"
 curl -fsSL --retry 5 --max-time 10 -o "$output_file" "$asset_url"
 
 if [[ "$RUNNER_OS" == "Windows" ]]; then
-	echo $(cygpath -aw "$install_dir") >>"$GITHUB_PATH"
+	cygpath -aw "$install_dir" >>"$GITHUB_PATH"
 else
-	tar -xzf komac.tar.gz
-	sudo mv komac $install_dir
+	tar -xf "$output_file"
+	sudo mv komac "$install_dir"
 fi
 
-log "Successfully Installed komac to $install_dir"
+log "Successfully installed komac to $install_dir"

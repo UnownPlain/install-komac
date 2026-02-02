@@ -10,6 +10,14 @@ inputs:
     description: Custom repository to download komac from (e.g. russellbanks/Komac).
     required: false
     default: russellbanks/Komac
+  compression:
+    description: Compression format for the tarball (gz or zst).
+    required: false
+    default: gz
+  linux_libc:
+    description: Linux libc variant (gnu or musl).
+    required: false
+    default: gnu
   github_token:
     description: GitHub token for API rate limit (defaults to GITHUB_TOKEN).
     required: false
@@ -22,6 +30,8 @@ runs:
       env:
         VERSION: ${{ inputs.version }}
         REPO: ${{ inputs.repo }}
+        COMPRESSION: ${{ inputs.compression }}
+        LINUX_LIBC: ${{ inputs.linux_libc }}
         GH_TOKEN: ${{ inputs.github_token || github.token }}
       run: bash "${GITHUB_ACTION_PATH}/install_komac.sh"
 
