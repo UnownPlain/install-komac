@@ -1,16 +1,24 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["config:recommended"],
+	"extends": [
+		"config:recommended"
+	],
 	"packageRules": [
 		{
-			"matchUpdateTypes": ["minor", "patch", "digest"],
+			"matchUpdateTypes": [
+				"minor",
+				"patch",
+				"digest"
+			],
 			"automerge": true
 		}
 	],
 	"customManagers": [
 		{
 			"customType": "regex",
-			"fileMatch": ["^README\\.md$"],
+			"managerFilePatterns": [
+				"/^README\\.md$/"
+			],
 			"matchStrings": [
 				"uses: (?<depName>[^@]+)@(?<currentDigest>[a-f0-9]+)\\s*#\\s*(?<currentValue>[^\\s\\n]+)"
 			],
