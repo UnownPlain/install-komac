@@ -39,7 +39,7 @@ Cross-platform action to install [komac](https://github.com/russellbanks/Komac).
 - `ubuntu-24.04-arm`
 - `ubuntu-slim`
 - `macos-26`
-- `macos-15-intel`
+- `macos-26-intel`
 
 > [!NOTE]  
 > Other runner images will likely work, but aren't tested.
