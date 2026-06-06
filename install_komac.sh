@@ -10,8 +10,40 @@ compression="${COMPRESSION:-gz}"
 linux_libc="${LINUX_LIBC:-gnu}"
 
 case "$RUNNER_OS" in
-Linux) target="unknown-linux-$linux_libc.tar.$compression" ;;
-macOS) target="apple-darwin.tar.$compression" ;;
+Linux | macOS)
+	case "$compression" in
+	tar)
+		archive_suffix="tar"
+		tar_args=(-xf -)
+		;;
+	gz | gzip)
+		archive_suffix="tar.gz"
+		tar_args=(-xzf -)
+		;;
+	bz2 | bzip2)
+		archive_suffix="tar.bz2"
+		tar_args=(-xjf -)
+		;;
+	xz)
+		archive_suffix="tar.xz"
+		tar_args=(-xJf -)
+		;;
+	zst | zstd)
+		archive_suffix="tar.zst"
+		tar_args=(--zstd -xf -)
+		;;
+	*)
+		log "Unsupported compression: $compression"
+		exit 1
+		;;
+	esac
+
+	if [[ "$RUNNER_OS" == "Linux" ]]; then
+		target="unknown-linux-$linux_libc.$archive_suffix"
+	else
+		target="apple-darwin.$archive_suffix"
+	fi
+	;;
 Windows) target="pc-windows-msvc.exe" ;;
 *)
 	log "Unsupported RUNNER_OS: $RUNNER_OS"
@@ -28,15 +60,11 @@ ARM64) arch_norm="aarch64" ;;
 	;;
 esac
 
+install_dir="$HOME/.local/bin"
+mkdir -p "$install_dir"
+
 if [[ "$RUNNER_OS" == "Windows" ]]; then
-	install_dir="$HOME/.local/bin"
-	mkdir -p "$install_dir"
 	output_file="$install_dir/komac.exe"
-else
-	install_dir="$HOME/.local/bin"
-	mkdir -p "$install_dir"
-	cd "$(mktemp -d)"
-	output_file="komac.tar.$compression"
 fi
 
 if [[ -n "${VERSION:-}" ]]; then
@@ -51,13 +79,13 @@ fi
 
 asset_url="https://github.com/$repo/releases/download/$version/komac-${version#v}-$arch_norm-$target"
 log "Downloading from: $asset_url"
-curl -fsSL --retry 5 --max-time 10 -o "$output_file" "$asset_url"
 
 if [[ "$RUNNER_OS" == "Windows" ]]; then
+	curl -fsSL --retry 5 --max-time 10 -o "$output_file" "$asset_url"
 	cygpath -aw "$install_dir" >>"$GITHUB_PATH"
 else
-	tar -xf "$output_file"
-	mv komac "$install_dir"
+	curl -fsSL --retry 5 --max-time 10 "$asset_url" |
+		tar "${tar_args[@]}" -C "$install_dir" komac
 	echo "$install_dir" >>"$GITHUB_PATH"
 fi
 
