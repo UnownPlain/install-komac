@@ -9,7 +9,7 @@ Cross-platform action to install [komac](https://github.com/russellbanks/Komac).
 
 ```yaml
 - name: Install komac
-  uses: UnownPlain/install-komac@aa87b1b14e2370e14cb11449e4408f8ae7a651d9 # 1.2
+  uses: UnownPlain/install-komac@3b46a8cf5573b6f6ccc14b89919637d61990a797 # 1.3
 - name: Update Package
   run: komac update foo.bar --version "${VERSION}" --urls "https://example.com/downloads/${VERSION}/installer.msix" --submit
   env:
