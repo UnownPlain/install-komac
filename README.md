@@ -28,6 +28,12 @@ Cross-platform action to install [komac](https://github.com/russellbanks/Komac).
 - `repo`: Custom GitHub repository to download komac from.
   - **Required**: ❌ Uses russellbanks/Komac by default.
   - **Example**: `octocat/Komac`
+- `compression`: Tarball format to download.
+  - **Required**: ❌ Uses `gz` by default.
+  - **Example**: `tar`, `gz`, `bz2`, `xz`, `zst`
+- `linux_libc`: Linux libc variant to download.
+  - **Required**: ❌ Uses `gnu` by default.
+  - **Example**: `gnu`, `musl`
 - `github_token`: GitHub token for API rate limit.
   - **Required**: ❌ Uses the default `GITHUB_TOKEN` present in runner.
 

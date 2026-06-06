@@ -11,7 +11,7 @@ inputs:
     required: false
     default: russellbanks/Komac
   compression:
-    description: Compression format for the tarball (gz or zst).
+    description: Tarball format (tar, gz, bz2, xz, or zst).
     required: false
     default: gz
   linux_libc:
