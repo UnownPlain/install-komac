@@ -33,7 +33,8 @@ if [[ "$RUNNER_OS" == "Windows" ]]; then
 	mkdir -p "$install_dir"
 	output_file="$install_dir/komac.exe"
 else
-	install_dir="/usr/local/bin"
+	install_dir="$HOME/.local/bin"
+	mkdir -p "$install_dir"
 	cd "$(mktemp -d)"
 	output_file="komac.tar.$compression"
 fi
@@ -56,7 +57,8 @@ if [[ "$RUNNER_OS" == "Windows" ]]; then
 	cygpath -aw "$install_dir" >>"$GITHUB_PATH"
 else
 	tar -xf "$output_file"
-	sudo mv komac "$install_dir"
+	mv komac "$install_dir"
+	echo "$install_dir" >>"$GITHUB_PATH"
 fi
 
 log "Successfully installed komac to $install_dir"
