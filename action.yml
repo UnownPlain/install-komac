@@ -18,22 +18,18 @@ inputs:
     description: Linux libc variant (gnu or musl).
     required: false
     default: gnu
-  github_token:
-    description: GitHub token for API rate limit (defaults to GITHUB_TOKEN).
-    required: false
 
 runs:
   using: composite
   steps:
     - name: Install komac
+      run: bash "${GITHUB_ACTION_PATH}/install_komac.sh"
       shell: bash
       env:
         VERSION: ${{ inputs.version }}
         REPO: ${{ inputs.repo }}
         COMPRESSION: ${{ inputs.compression }}
         LINUX_LIBC: ${{ inputs.linux_libc }}
-        GH_TOKEN: ${{ inputs.github_token || github.token }}
-      run: bash "${GITHUB_ACTION_PATH}/install_komac.sh"
 
 branding:
   icon: download

@@ -71,10 +71,10 @@ if [[ -n "${VERSION:-}" ]]; then
 	version="${VERSION#v}"
 	[[ "$version" != "nightly" ]] && version="v$version"
 else
-	version=$(curl -fsSL --retry 3 --max-time 10 \
-		-H "Authorization: Bearer $GH_TOKEN" \
-		"https://api.github.com/repos/$repo/releases/latest" |
-		jq -r '.tag_name')
+	version=$(
+		u=$(curl -fsSI -o /dev/null -w '%header{location}' https://github.com/russellbanks/Komac/releases/latest)
+		printf '%s' "${u##*/}"
+	)
 fi
 
 asset_url="https://github.com/$repo/releases/download/$version/komac-${version#v}-$arch_norm-$target"

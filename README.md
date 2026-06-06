@@ -34,8 +34,6 @@ Cross-platform action to install [komac](https://github.com/russellbanks/Komac).
 - `linux_libc`: Linux libc variant to download.
   - **Required**: ❌ Uses `gnu` by default.
   - **Example**: `gnu`, `musl`
-- `github_token`: GitHub token for API rate limit.
-  - **Required**: ❌ Uses the default `GITHUB_TOKEN` present in runner.
 
 ## Supported Runners
 
