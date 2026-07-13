@@ -5,6 +5,15 @@
 		{
 			"matchUpdateTypes": ["minor", "patch", "digest"],
 			"automerge": true
+		},
+		{
+			"matchManagers": "github-actions",
+			"minimumReleaseAge": "7 days"
+		},
+		{
+			"description": "Disable minimum release age checks for internal dependencies",
+			"matchPackageNames": ["@unownplain/*", "UnownPlain/*"],
+			"minimumReleaseAge": null
 		}
 	],
 	"customManagers": [
