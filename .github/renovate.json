@@ -5,6 +5,10 @@
 		{
 			"matchUpdateTypes": ["minor", "patch", "digest"],
 			"automerge": true
+		},
+		{
+			"matchManagers": "github-actions",
+			"minimumReleaseAge": "7 days"
 		}
 	],
 	"customManagers": [
