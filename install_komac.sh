@@ -72,7 +72,7 @@ if [[ -n "${VERSION:-}" ]]; then
 	[[ "$version" != "nightly" ]] && version="v$version"
 else
 	version=$(
-		u=$(curl -fsSI -o /dev/null -w '%header{location}' https://github.com/russellbanks/Komac/releases/latest)
+		u=$(curl -fsSI -o /dev/null -w '%header{location}' https://github.com/$repo/releases/latest)
 		printf '%s' "${u##*/}"
 	)
 fi
