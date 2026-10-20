@@ -18,7 +18,7 @@ permissions: {}
 jobs:
   zizmor:
     name: zizmor
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     timeout-minutes: 5
     permissions:
       security-events: write # Required for upload-sarif (used by zizmor-action) to upload SARIF files.
