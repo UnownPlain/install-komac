@@ -36,7 +36,7 @@ jobs:
           persist-credentials: false
 
       - name: Run Action
-        uses: ./
+        uses: $/
 
       - name: Verify komac Availability
         run: komac --version
